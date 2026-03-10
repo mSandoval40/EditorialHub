@@ -28,7 +28,7 @@ export default function Home() {
           }}>Plataforma editorial independiente</span>
         </div>
         <div style={{ display: "flex", gap: "24px" }}>
-          <a href="#" style={{ color: "#ffffff", textDecoration: "none", fontSize: "14px" }}>Catálogo</a>
+          <a href="/catalogo" style={{ color: "#ffffff", textDecoration: "none", fontSize: "14px" }}>Catálogo</a>
           <a href="#" style={{ color: "#ffffff", textDecoration: "none", fontSize: "14px" }}>Autores</a>
           <a href="#" style={{ color: "#037D8C", textDecoration: "none", fontSize: "14px", fontWeight: "bold" }}>Publicar mi libro</a>
         </div>
@@ -59,7 +59,7 @@ export default function Home() {
           marginBottom: "40px",
         }}>Publica – Vende – Distribuye</p>
         <div style={{ display: "flex", gap: "16px", justifyContent: "center" }}>
-          <a href="#" style={{
+          <a href="/catalogo" style={{
             backgroundColor: "#037D8C",
             color: "#ffffff",
             padding: "14px 32px",
