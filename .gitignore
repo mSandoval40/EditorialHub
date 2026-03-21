@@ -39,3 +39,35 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local development data and generated backend artifacts
+/backend/dist/
+/backend/uploads/
+/backend/.env
+/credenciales_desarrollo.txt
+/stripe-listen.out.log
+/stripe-listen.err.log
+/tmp_editorialhub_efp_v13.txt
+/usuarios_desarrollo.csv
+/usuarios_desarrollo.latest.csv
+
+# local temporary logs and extraction artifacts
+/*.out.log
+/*.err.log
+/backend/*.out.log
+/backend/*.err.log
+/backend/tmp_backend_*.log
+/frontend-clean.out.log
+/frontend-clean.err.log
+/backend-clean.out.log
+/backend-clean.err.log
+/backend-dev.out.log
+/backend-dev.err.log
+/backend-start.out.log
+/backend-start.err.log
+/next-dev.out.log
+/next-dev.err.log
+/temp_efp_v13_extracted.txt
+/tmp_docx_read.zip
+/tmp_cont2.zip
+/tmp_docx_read/

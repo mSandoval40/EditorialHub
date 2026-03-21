@@ -1,0 +1,604 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserStatus {
+  PENDING_EMAIL_VERIFICATION
+  ACTIVE
+  SUSPENDED
+  BLOCKED
+}
+
+enum RoleName {
+  BUYER
+  AUTHOR
+  ADMIN
+  ADMIN_02
+}
+
+enum AuthorProfileType {
+  CERTIFIED
+  ANONYMOUS
+}
+
+enum AuthorApplicationStatus {
+  IN_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum LoyaltyLevel {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+  DIAMOND
+}
+
+enum WorkStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  REJECTED
+  PUBLISHED
+  CANCELLED
+}
+
+enum PublicationType {
+  BOOK
+  MAGAZINE
+  ARTICLE
+  OTHER
+}
+
+enum PurchaseStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  STRIPE
+  PAYPAL
+  MANUAL
+}
+
+enum PaymentAttemptStatus {
+  CREATED
+  PENDING
+  SUCCEEDED
+  FAILED
+  CANCELLED
+}
+
+enum DownloadKeyStatus {
+  ACTIVE
+  EXPIRED
+  EXHAUSTED
+  REVOKED
+  USED
+}
+
+enum WorkReviewStatus {
+  PUBLISHED
+  HIDDEN
+}
+
+enum PayoutRequestStatus {
+  REQUESTED
+  SCHEDULED
+  PAID
+  FAILED
+  CANCELLED
+}
+
+enum BankValidationStatus {
+  MISSING
+  PENDING_VALIDATION
+  VALIDATED
+  REJECTED
+}
+
+enum TaxIdSource {
+  NONE
+  DECLARED
+  DERIVED
+}
+
+enum BankValidationAttemptStatus {
+  REQUESTED
+  MICRODEPOSIT_SENT
+  CONFIRMED
+  REJECTED
+  EXPIRED
+}
+
+enum AuditEventType {
+  USER_REGISTER_STARTED
+  USER_EMAIL_VERIFIED
+  USER_LOGIN
+  USER_PASSWORD_RECOVERY_REQUESTED
+  USER_PASSWORD_RESET
+  AUTHOR_APPLICATION_CREATED
+  AUTHOR_APPLICATION_APPROVED
+  AUTHOR_APPLICATION_REJECTED
+  WORK_CREATED
+  WORK_UPDATED
+  WORK_SUBMITTED_FOR_REVIEW
+  WORK_APPROVED
+  WORK_REJECTED
+  WORK_PUBLISHED
+  WORK_CANCELLED
+  PURCHASE_CREATED
+  PAYMENT_ATTEMPT_CREATED
+  PAYMENT_CONFIRMED
+  PAYMENT_FAILED
+  DOWNLOAD_KEY_GENERATED
+  DOWNLOAD_KEY_REGENERATED
+  DOWNLOAD_ATTEMPT
+  PAYOUT_REQUEST_CREATED
+  PAYOUT_REQUEST_SCHEDULED
+  PAYOUT_REQUEST_PAID
+  ADMIN_ACTION
+}
+
+model User {
+  id              String     @id @default(cuid())
+  email           String     @unique
+  passwordHash    String
+  emailVerifiedAt DateTime?
+  status          UserStatus @default(PENDING_EMAIL_VERIFICATION)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  profile         UserProfile?
+  roles           UserRole[]
+  emailCodes      EmailVerificationCode[]
+  passwordResets  PasswordResetCode[]
+  authorProfile   AuthorProfile?
+  createdWorks    Work[]                  @relation("WorkCreatedBy")
+  purchases       Purchase[]
+  paymentAttempts PaymentAttempt[]
+  payoutRequests  PayoutRequest[]
+  auditLogs       AuditLog[]              @relation("AuditActor")
+  downloadKeys    DownloadKey[]
+  workReviews     WorkReview[]            @relation("WorkReviewAuthor")
+}
+
+model PrimaryAdminChangeRequest {
+  id                 String   @id @default(cuid())
+  requestedByUserId  String
+  currentAdminUserId String
+  currentAdminEmail  String
+  newAdminEmail      String
+  newPasswordHash    String
+  approvalTokenHash  String   @unique
+  expiresAt          DateTime
+  approvedAt         DateTime?
+  consumedAt         DateTime?
+  cancelledAt        DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([currentAdminUserId, createdAt])
+  @@index([requestedByUserId, createdAt])
+  @@index([expiresAt])
+}
+
+model UserProfile {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  firstName            String?
+  lastName             String?
+  phone                String?
+  country              String?
+  avatarUrl            String?
+  publicBio            String?
+  publicPreferences    String?
+  showAvatar           Boolean  @default(false)
+  showPublicBio        Boolean  @default(false)
+  showPublicPreferences Boolean @default(false)
+  isFavoredSocio       Boolean  @default(false)
+  favoredAssignedAt    DateTime?
+  favoredAssignedByUserId String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([isFavoredSocio])
+}
+
+model Role {
+  id        String   @id @default(cuid())
+  name      RoleName @unique
+  createdAt DateTime @default(now())
+
+  users UserRole[]
+}
+
+model UserRole {
+  id         String   @id @default(cuid())
+  userId     String
+  roleId     String
+  assignedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, roleId])
+  @@index([roleId])
+}
+
+model EmailVerificationCode {
+  id           String    @id @default(cuid())
+  userId       String
+  code         String
+  expiresAt    DateTime
+  attemptsUsed Int       @default(0)
+  maxAttempts  Int       @default(3)
+  consumedAt   DateTime?
+  createdAt    DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PasswordResetCode {
+  id           String    @id @default(cuid())
+  userId       String
+  code         String
+  expiresAt    DateTime
+  attemptsUsed Int       @default(0)
+  maxAttempts  Int       @default(3)
+  consumedAt   DateTime?
+  createdAt    DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model AuthorProfile {
+  id                 String                  @id @default(cuid())
+  userId             String                  @unique
+  publicName         String
+  legalName          String?
+  curp               String?
+  dateOfBirth        DateTime?
+  bio                String?
+  authorProfileType  AuthorProfileType
+  applicationStatus  AuthorApplicationStatus @default(IN_REVIEW)
+  royaltyRatePercent Decimal                 @db.Decimal(5, 2)
+  loyaltyManualLevel LoyaltyLevel?
+  loyaltyAssignedAt  DateTime?
+  loyaltyAssignedByUserId String?
+  taxId              String?
+  taxIdDeclared      String?
+  taxIdDerived       String?
+  taxIdSource        TaxIdSource             @default(NONE)
+  payoutMethod       String?
+  payoutAccountData  Json?
+  bankValidationStatus BankValidationStatus  @default(MISSING)
+  bankValidationReference String?
+  bankValidationRequestedAt DateTime?
+  bankValidationNotes String?
+  bankValidatedAt    DateTime?
+  governmentIdFileId String?
+  avatarFileId       String?
+  approvedAt         DateTime?
+  rejectedAt         DateTime?
+  rejectionReason    String?
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  works          Work[]
+  payoutRequests PayoutRequest[]
+  bankValidationAttempts BankValidationAttempt[]
+
+  @@index([applicationStatus])
+  @@index([loyaltyManualLevel])
+  @@index([publicName])
+}
+
+model BankValidationAttempt {
+  id                    String                      @id @default(cuid())
+  authorProfileId       String
+  initiatedByAdminUserId String?
+  provider              String                      @default("STRIPE")
+  amountMinor           Int
+  currency              String                      @default("MXN")
+  referenceCode         String
+  status                BankValidationAttemptStatus @default(REQUESTED)
+  verificationAttemptsUsed Int                      @default(0)
+  maxVerificationAttempts Int                       @default(3)
+  sentAt                DateTime?
+  confirmedAt           DateTime?
+  expiresAt             DateTime?
+  notes                 String?
+  metadata              Json?
+  createdAt             DateTime                    @default(now())
+  updatedAt             DateTime                    @updatedAt
+
+  authorProfile AuthorProfile @relation(fields: [authorProfileId], references: [id], onDelete: Cascade)
+
+  @@index([authorProfileId, createdAt])
+  @@index([status, expiresAt])
+  @@unique([referenceCode])
+}
+
+model Work {
+  id              String          @id @default(cuid())
+  authorProfileId String
+  createdByUserId String
+  title           String
+  slug            String          @unique
+  description     String?
+  publicationType PublicationType @default(BOOK)
+  status          WorkStatus      @default(DRAFT)
+  currentEdition  Int             @default(1)
+  publishedAt     DateTime?
+  rejectedAt      DateTime?
+  rejectionReason String?
+  cancelledAt     DateTime?
+  coverFileId     String?
+  metadata        Json?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  authorProfile AuthorProfile  @relation(fields: [authorProfileId], references: [id], onDelete: Restrict)
+  createdBy     User           @relation("WorkCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  editions      WorkEdition[]
+  purchaseItems PurchaseItem[]
+  reviews       WorkReview[]
+  editorialProfile WorkEditorialProfile?
+  auditLogs     AuditLog[]
+
+  @@index([authorProfileId])
+  @@index([status])
+  @@index([title])
+}
+
+model WorkReview {
+  id                  String           @id @default(cuid())
+  workId              String
+  reviewerUserId      String
+  purchaseId          String?
+  rating              Int
+  comment             String
+  status              WorkReviewStatus @default(PUBLISHED)
+  editorialFeatured   Boolean          @default(false)
+  editorialPinnedOrder Int?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  work     Work      @relation(fields: [workId], references: [id], onDelete: Cascade)
+  reviewer User      @relation("WorkReviewAuthor", fields: [reviewerUserId], references: [id], onDelete: Cascade)
+  purchase Purchase? @relation(fields: [purchaseId], references: [id], onDelete: SetNull)
+
+  @@unique([workId, reviewerUserId])
+  @@index([workId, status])
+  @@index([reviewerUserId])
+}
+
+model WorkEditorialProfile {
+  id                  String   @id @default(cuid())
+  workId              String   @unique
+  favoredEligible     Boolean  @default(false)
+  editorialBadgeText  String?
+  editorialHeadline   String?
+  visibleAverageRating Decimal? @db.Decimal(3, 2)
+  featuredReviewNote  String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+}
+
+model WorkEdition {
+  id                  String    @id @default(cuid())
+  workId              String
+  editionNumber       Int
+  titleSnapshot       String
+  descriptionSnapshot String?
+  manuscriptFileId    String
+  coverFileId         String?
+  isActive            Boolean   @default(true)
+  publishedAt         DateTime?
+  cancelledAt         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  work          Work           @relation(fields: [workId], references: [id], onDelete: Cascade)
+  purchaseItems PurchaseItem[]
+
+  @@unique([workId, editionNumber])
+  @@index([workId, isActive])
+}
+
+model FileAsset {
+  id               String   @id @default(cuid())
+  storageProvider  String
+  bucket           String?
+  objectKey        String   @unique
+  originalName     String
+  mimeType         String
+  sizeBytes        BigInt
+  checksum         String?
+  isPrivate        Boolean  @default(true)
+  uploadedByUserId String?
+  createdAt        DateTime @default(now())
+}
+
+model Purchase {
+  id             String         @id @default(cuid())
+  buyerId        String
+  folio          String         @unique
+  status         PurchaseStatus @default(PENDING)
+  subtotalAmount Decimal        @db.Decimal(12, 2)
+  totalAmount    Decimal        @db.Decimal(12, 2)
+  currency       String         @default("MXN")
+  confirmedAt    DateTime?
+  failedAt       DateTime?
+  cancelledAt    DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  buyer           User             @relation(fields: [buyerId], references: [id], onDelete: Restrict)
+  items           PurchaseItem[]
+  paymentAttempts PaymentAttempt[]
+  downloadKeys    DownloadKey[]
+  reviews         WorkReview[]
+  auditLogs       AuditLog[]
+
+  @@index([buyerId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model PurchaseItem {
+  id                 String   @id @default(cuid())
+  purchaseId         String
+  workId             String
+  workEditionId      String?
+  titleSnapshot      String
+  authorNameSnapshot String
+  unitPrice          Decimal  @db.Decimal(12, 2)
+  royaltyRatePercent Decimal  @db.Decimal(5, 2)
+  createdAt          DateTime @default(now())
+
+  purchase    Purchase     @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  work        Work         @relation(fields: [workId], references: [id], onDelete: Restrict)
+  workEdition WorkEdition? @relation(fields: [workEditionId], references: [id], onDelete: SetNull)
+
+  @@index([purchaseId])
+  @@index([workId])
+}
+
+model PaymentAttempt {
+  id                String               @id @default(cuid())
+  purchaseId        String
+  buyerId           String
+  provider          PaymentProvider
+  providerReference String?
+  status            PaymentAttemptStatus @default(CREATED)
+  amount            Decimal              @db.Decimal(12, 2)
+  currency          String               @default("MXN")
+  rawRequest        Json?
+  rawResponse       Json?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  confirmedAt       DateTime?
+  failedAt          DateTime?
+
+  purchase Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  buyer    User     @relation(fields: [buyerId], references: [id], onDelete: Restrict)
+
+  @@index([purchaseId])
+  @@index([buyerId])
+  @@index([status])
+  @@index([providerReference])
+}
+
+model DownloadKey {
+  id                String            @id @default(cuid())
+  purchaseId        String
+  buyerId           String
+  code              String            @unique
+  status            DownloadKeyStatus @default(ACTIVE)
+  maxAttempts       Int               @default(3)
+  attemptsUsed      Int               @default(0)
+  expiresAt         DateTime
+  generatedByUserId String?
+  consumedAt        DateTime?
+  revokedAt         DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  purchase Purchase          @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  buyer    User              @relation(fields: [buyerId], references: [id], onDelete: Restrict)
+  attempts DownloadAttempt[]
+
+  @@index([purchaseId])
+  @@index([buyerId])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+model DownloadAttempt {
+  id            String   @id @default(cuid())
+  downloadKeyId String
+  ipAddress     String?
+  userAgent     String?
+  wasSuccessful Boolean
+  createdAt     DateTime @default(now())
+
+  downloadKey DownloadKey @relation(fields: [downloadKeyId], references: [id], onDelete: Cascade)
+
+  @@index([downloadKeyId])
+  @@index([createdAt])
+}
+
+model PayoutRequest {
+  id                String              @id @default(cuid())
+  authorProfileId   String
+  requestedByUserId String
+  status            PayoutRequestStatus @default(REQUESTED)
+  grossAmount       Decimal             @db.Decimal(12, 2)
+  commissionAmount  Decimal             @db.Decimal(12, 2)
+  netAmount         Decimal             @db.Decimal(12, 2)
+  currency          String              @default("MXN")
+  requestedAt       DateTime            @default(now())
+  scheduledFor      DateTime?
+  paidAt            DateTime?
+  failedAt          DateTime?
+  cancelledAt       DateTime?
+  providerReference String?
+  notes             String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  authorProfile AuthorProfile @relation(fields: [authorProfileId], references: [id], onDelete: Restrict)
+  requestedBy   User          @relation(fields: [requestedByUserId], references: [id], onDelete: Restrict)
+
+  @@index([authorProfileId])
+  @@index([requestedByUserId])
+  @@index([status])
+  @@index([scheduledFor])
+}
+
+model AuditLog {
+  id              String         @id @default(cuid())
+  actorUserId     String?
+  eventType       AuditEventType
+  entityType      String
+  entityId        String
+  targetUserId    String?
+  workId          String?
+  purchaseId      String?
+  payoutRequestId String?
+  metadata        Json?
+  createdAt       DateTime       @default(now())
+
+  actor    User?     @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+  work     Work?     @relation(fields: [workId], references: [id], onDelete: SetNull)
+  purchase Purchase? @relation(fields: [purchaseId], references: [id], onDelete: SetNull)
+
+  @@index([actorUserId])
+  @@index([eventType])
+  @@index([entityType, entityId])
+  @@index([targetUserId])
+  @@index([workId])
+  @@index([purchaseId])
+  @@index([createdAt])
+}

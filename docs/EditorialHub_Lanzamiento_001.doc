@@ -1,0 +1,245 @@
+EditorialHub - Lanzamiento 001
+
+Fecha de emision: 2026-03-20
+
+1. Proposito de este documento
+
+Este documento fija una ruta de trabajo para lanzar EditorialHub cuanto antes, evitando abrir frentes nuevos de producto y concentrando el esfuerzo en cierre, validacion, limpieza y salida operativa.
+
+La regla central a partir de este punto es:
+
+- no crecer por crecer;
+- no abrir modulos vistosos que no acerquen al lanzamiento;
+- no rehacer bases que ya funcionan;
+- solo optimizar, corregir y asegurar lo existente.
+
+2. Criterio rector de esta etapa
+
+EditorialHub ya tiene base funcional real. Por tanto, el trabajo correcto ya no es expansion, sino endurecimiento para lanzamiento.
+
+En esta etapa, toda tarea debe pasar este filtro:
+
+- mejora directamente la posibilidad de lanzar pronto;
+- reduce riesgo operativo, visual, legal o comercial;
+- aclara algo que hoy podria confundir al usuario real;
+- cierra una brecha que afectaria confianza o soporte.
+
+Si una tarea no pasa ese filtro, no entra en la ruta inmediata.
+
+3. Objetivo operativo inmediato
+
+Lanzar una primera version estable, creible y operable de EditorialHub con:
+
+- registro y login funcionando;
+- publicacion y revision editorial funcionando;
+- catalogo y ficha de obra funcionando;
+- compra y biblioteca funcionando;
+- descarga protegida funcionando;
+- lectura economica del autor suficientemente clara;
+- paneles ADMIN y SOCIO consistentes;
+- textos criticos suficientemente cuidados;
+- operacion local y despliegue controlados.
+
+3.1 Estado general de la ruta
+
+Estado global actual: EN CURSO
+
+Convencion de seguimiento para este documento:
+
+- PENDIENTE: aun no se trabaja formalmente el bloque;
+- EN CURSO: ya se esta trabajando o ya hubo avances parciales;
+- CERRADO: el bloque quedo suficientemente resuelto para lanzamiento;
+- BLOQUEADO: existe una dependencia o problema que impide cerrarlo.
+
+4. Ruta corta hacia lanzamiento
+
+Orden recomendado de ejecucion:
+
+4.1 Cerrar pruebas end-to-end reales
+
+Estado: PENDIENTE
+
+Este es el primer bloque porque sin validacion real de recorrido completo no existe lanzamiento serio.
+
+Recorridos minimos obligatorios:
+
+- registro;
+- verificacion de correo;
+- login;
+- alta de perfil colaborador;
+- captura fiscal y bancaria;
+- publicacion de obra;
+- revision administrativa;
+- publicacion visible en catalogo;
+- compra con usuario real;
+- aterrizaje correcto en biblioteca;
+- descarga protegida;
+- reflejo de venta en economia del autor;
+- solicitud de pago de regalias;
+- lectura administrativa de ese estado.
+
+Meta de salida de este bloque:
+
+- dejar evidencia clara de que todos los recorridos criticos funcionan de punta a punta.
+
+4.2 Cerrar bugs y fricciones visibles de alta prioridad
+
+Estado: PENDIENTE
+
+Una vez recorridos los flujos, todo ajuste debe ser quirurgico.
+
+Tipos de ajustes permitidos en esta etapa:
+
+- errores funcionales;
+- inconsistencias de navegacion;
+- textos ambiguos;
+- mensajes que puedan confundir al usuario;
+- detalles visuales que resten confianza;
+- estados que no reflejen bien la realidad del negocio.
+
+Tipos de ajustes no prioritarios en esta etapa:
+
+- nuevas funciones grandes;
+- automatizaciones futuras;
+- expansiones institucionales;
+- mejoras vistosas sin impacto directo en lanzamiento.
+
+4.3 Cerrar coherencia comercial y economica del autor
+
+Estado: EN CURSO
+
+Este bloque ya va avanzado y debe rematarse, no expandirse.
+
+Se debe revisar que el autor entienda con claridad:
+
+- cuanto vendio;
+- cuanto le corresponde;
+- cuanto queda disponible;
+- que significa su membresia;
+- como se relaciona la membresia con su condicion economica;
+- que estados de pago existen y que significan.
+
+Meta de salida de este bloque:
+
+- que un autor real pueda leer su panel sin necesidad de explicacion externa para entender su situacion basica.
+
+4.4 Cerrar textos legales y avisos criticos
+
+Estado: EN CURSO
+
+No se trata todavia de hacer una construccion juridica final de alto costo, sino de evitar huecos evidentes antes de salir.
+
+Frentes minimos a revisar:
+
+- terminos;
+- mensajes de compra;
+- mensajes de publicacion;
+- avisos de regalias;
+- avisos sobre datos fiscales y bancarios;
+- aclaraciones de membresias;
+- mensajes donde una mala redaccion pueda causar expectativa equivocada.
+
+Meta de salida de este bloque:
+
+- que el producto no se vea improvisado ni juridicamente descuidado en sus mensajes visibles.
+
+4.5 Cerrar checklist tecnico de salida
+
+Estado: EN CURSO
+
+Antes de lanzar debe verificarse:
+
+- variables de entorno correctas;
+- build frontend en verde;
+- build backend en verde;
+- migraciones listas;
+- reinicio limpio de servicios;
+- logs basicos localizables;
+- comportamiento estable despues de reinicio;
+- ausencia de procesos viejos que contaminen la lectura del sistema.
+
+Meta de salida de este bloque:
+
+- que el sistema pueda levantarse y sostenerse sin depender de un estado accidental de desarrollo.
+
+5. Tablero de seguimiento rapido
+
+Resumen ejecutivo de estado al cierre de esta version del documento:
+
+- Pruebas end-to-end reales: PENDIENTE
+- Bugs y fricciones de alta prioridad: PENDIENTE
+- Coherencia comercial y economica del autor: EN CURSO
+- Textos legales y avisos criticos: EN CURSO
+- Checklist tecnico de salida: EN CURSO
+
+Pendientes inmediatos de mayor impacto:
+
+- recorrer y documentar pruebas reales completas;
+- capturar bugs de lanzamiento encontrados en esos recorridos;
+- cerrar textos visibles donde aun pueda haber ambiguedad comercial o legal;
+- confirmar que el sistema levante limpio y consistente en reinicios.
+
+6. Lo que no entra antes del lanzamiento
+
+Queda expresamente fuera de la ruta inmediata:
+
+- IA promocional;
+- watermarking avanzado por comprador;
+- trazabilidad forense reforzada;
+- compra como invitado;
+- expansiones de marca institucional;
+- automatizaciones avanzadas de administracion;
+- nuevas capas publicas no esenciales.
+
+Nada de eso debe competir contra el lanzamiento inicial.
+
+7. Prioridades concretas para las siguientes sesiones
+
+Prioridad 1:
+
+- recorrer y documentar pruebas reales end-to-end.
+
+Prioridad 2:
+
+- cerrar bugs y fricciones encontradas en esos recorridos.
+
+Prioridad 3:
+
+- rematar textos visibles criticos de economia, membresia, compra y publicacion.
+
+Prioridad 4:
+
+- ejecutar checklist tecnico de salida y preparar entorno de lanzamiento.
+
+8. Criterio de decision para cada nuevo pendiente
+
+Ante cualquier nueva idea o mejora, la pregunta obligatoria sera:
+
+"Esto ayuda a lanzar antes o nos distrae del lanzamiento?"
+
+Si distrae, se manda al backlog posterior.
+
+9. Regla de actualizacion de este documento
+
+Cada vez que se cierre un bloque o cambie el estado real del lanzamiento, debe actualizarse este documento o emitirse su siguiente consecutivo.
+
+Minimo que debe actualizarse en la siguiente version:
+
+- estado de cada bloque;
+- riesgos nuevos detectados;
+- bloqueos reales;
+- prioridades inmediatas de la siguiente sesion.
+
+10. Conclusión ejecutiva
+
+EditorialHub ya no necesita crecer en ancho para salir. Necesita cerrar en profundidad.
+
+La ruta correcta para lanzar cuanto antes es:
+
+1. probar;
+2. corregir;
+3. aclarar;
+4. endurecer;
+5. lanzar.
+
+Todo lo demas debe esperar a la fase posterior al lanzamiento.

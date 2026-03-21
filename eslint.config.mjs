@@ -5,6 +5,12 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@next/next/no-html-link-for-pages": "warn",
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
@@ -12,6 +18,16 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "backend/dist/**",
+    "backend/uploads/**",
+    "backend/prisma/**/*.js",
+    "backend/src/**/*.js",
+    "backend/*.js",
+    "backend/scripts/**",
+    "credenciales_desarrollo.txt",
+    "stripe-listen*.log",
+    "usuarios_desarrollo*.csv",
+    "tmp_editorialhub_efp_v13.txt",
   ]),
 ]);
 

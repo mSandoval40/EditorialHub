@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "validate:env": "node scripts/validate-release-env.mjs"
   },
   "dependencies": {
     "next": "16.1.6",
@@ -15,12 +16,23 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+    "tailwindcss": "^4"
+  },
+  "description": "This is a Next.js project bootstrapped with create-next-app.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mSandoval40/editorialhub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mSandoval40/editorialhub/issues"
+  },
+  "homepage": "https://github.com/mSandoval40/editorialhub#readme"
 }

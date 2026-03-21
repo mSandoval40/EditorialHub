@@ -1,0 +1,30 @@
+DATOS DE PRUEBA PARA DESARROLLO
+EditorialHub
+
+Aviso:
+Estos datos son simulados y fueron creados solo para pruebas internas de desarrollo.
+No corresponden a identidades oficiales verificadas ante SAT o RENAPO.
+
+1. HOMBRE
+Nombre completo: Rafael Sandoval Diaz
+Fecha de nacimiento: 1980-01-01
+Lugar de nacimiento: Guadalajara, Jalisco, Mexico
+Sexo: Hombre
+RFC de prueba: SADR800101
+CURP de prueba: SADR800101HJCLZF08
+
+2. MUJER
+Nombre completo: Mariana Lopez Herrera
+Fecha de nacimiento: 1992-07-14
+Lugar de nacimiento: Monterrey, Nuevo Leon, Mexico
+Sexo: Mujer
+RFC de prueba: LOHM920714
+CURP de prueba: LOHM920714MNLPRR05
+
+3. MUJER
+Nombre completo: Ximena Torres Vega
+Fecha de nacimiento: 1988-11-23
+Lugar de nacimiento: Merida, Yucatan, Mexico
+Sexo: Mujer
+RFC de prueba: TOVX881123
+CURP de prueba: TOVX881123MYNRGM09
